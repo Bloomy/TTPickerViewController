@@ -9,6 +9,7 @@
 
 @interface TTPickerTableViewController () {
     NSMutableArray *selectedRows_;
+    UIBarButtonItem *doneBtn_;
 }
 @end
 
@@ -17,10 +18,12 @@
 
 @synthesize selectedRows = selectedRows_;
 
+
 - (void)localInit
 {
     selectedRows_ = [NSMutableArray array];
     _allowsMultipleSelection = NO;
+    doneBtn_ = nil;
 }
 
 
@@ -103,13 +106,22 @@
 {
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelAction)];
     
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneAction)];
+    doneBtn_ = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneAction)];
+    self.navigationItem.rightBarButtonItem = doneBtn_;
+    
+    [self enableMenuButtonsIfNeeded];
 }
 
 
 - (void)createView
 {
     
+}
+
+
+- (void)enableMenuButtonsIfNeeded
+{
+    doneBtn_.enabled = selectedRows_.count > 0;
 }
 
 
@@ -168,6 +180,7 @@
             [self.delegate pickerTableViewController:self didSelectRow:indexPath.row];
         }
     }
+    [self enableMenuButtonsIfNeeded];
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
