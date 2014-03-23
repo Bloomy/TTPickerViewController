@@ -7,6 +7,7 @@
 
 #import "TTPickerTableViewController.h"
 
+
 @interface TTPickerTableViewController () {
     NSMutableArray *selectedRows_;
     UIBarButtonItem *doneBtn_;
@@ -16,52 +17,16 @@
 
 @implementation TTPickerTableViewController
 
-@synthesize selectedRows = selectedRows_;
-
-
-- (void)localInit
-{
-    selectedRows_ = [NSMutableArray array];
-    _allowsMultipleSelection = NO;
-    doneBtn_ = nil;
-}
-
-
-- (id)init
-{
-    self = [super init];
-    if (self) {
-        [self localInit];
-    }
-    return self;
-}
-
-
-- (id)initWithStyle:(UITableViewStyle)style
-{
-    self = [super initWithStyle:style];
-    if (self) {
-        [self localInit];
-    }
-    return self;
-}
-
-
-- (id)initWithCoder:(NSCoder *)aDecoder
-{
-    self = [super initWithCoder:aDecoder];
-    if (self) {
-        [self localInit];
-    }
-    return self;
-}
+@synthesize selectedRows = selectedRows_; // Read only
 
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        [self localInit];
+        selectedRows_ = [NSMutableArray array];
+        _allowsMultipleSelection = NO;
+        doneBtn_ = nil;
     }
     return self;
 }
@@ -71,7 +36,7 @@
 
 - (void)setSelectedRows:(NSArray *)selectedRows
 {
-    selectedRows_ = [NSMutableArray arrayWithArray:selectedRows];
+    selectedRows_ = [selectedRows mutableCopy];
 }
 
 
