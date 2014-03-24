@@ -7,9 +7,7 @@
 
 #import <UIKit/UIKit.h>
 #import "TTPickerViewControllerDelegate.h"
-
-
-@class TTPickerTableViewController;
+#import "TTPickerTableViewController.h"
 
 
 /**

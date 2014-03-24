@@ -6,7 +6,6 @@
 //
 
 #import "TTPickerViewController.h"
-#import "TTPickerTableViewController.h"
 
 
 @interface TTPickerViewController() {
