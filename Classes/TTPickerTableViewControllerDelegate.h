@@ -14,8 +14,13 @@
 @protocol TTPickerTableViewControllerDelegate <NSObject>
 
 - (void)pickerTableViewControllerDidCancel:(TTPickerTableViewController *)controller;
+
 - (NSInteger)numberOfRowsInPickerTableViewController:(TTPickerTableViewController *)controller;
-- (UITableViewCell *)pickerTableViewController:(TTPickerTableViewController *)controller tableView:(UITableView *)tableView cellForRowAt:(NSInteger)row;
+
+- (UITableViewCell *)pickerTableViewController:(TTPickerTableViewController *)controller
+                                     tableView:(UITableView *)tableView
+                                  cellForRowAt:(NSInteger)row;
+
 - (void)pickerTableViewController:(TTPickerTableViewController *)controller didFinishWithSelectedRows:(NSArray *)rows;
 
 @optional

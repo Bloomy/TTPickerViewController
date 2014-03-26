@@ -134,7 +134,7 @@
             NSNumber *lastObj = [selectedRows_ lastObject];
             if (lastObj) {
                 [selectedRows_ removeLastObject];
-                [self.tableView reloadRowsAtIndexPaths:@[ [NSIndexPath indexPathForRow:[lastObj integerValue] inSection:0]] withRowAnimation:NO];
+                [self.tableView reloadRowsAtIndexPaths:@[ [NSIndexPath indexPathForRow:[lastObj integerValue] inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
             }
         }
 

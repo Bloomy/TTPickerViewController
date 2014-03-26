@@ -6,7 +6,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "TTPickerViewControllerDelegate.h"
 #import "TTPickerTableViewController.h"
 
 
@@ -19,5 +18,4 @@
 @interface TTPickerViewController : UINavigationController
 
 @property (nonatomic, readonly) TTPickerTableViewController *tableViewController;
-@property (nonatomic, weak) id<UINavigationControllerDelegate, TTPickerViewControllerDelegate> delegate;
 @end
