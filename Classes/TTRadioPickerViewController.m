@@ -1,21 +1,21 @@
 //
-//  TTPickerTableViewController.m
+//  TTRadioPickerViewController
 //
 //  Created by Orlando Aleman Ortiz on 08/07/13.
 //  Copyright (c) 2013 orlandoaleman.com. All rights reserved.
 //
 
-#import "TTPickerTableViewController.h"
+#import "TTRadioPickerViewController.h"
 
 
-@interface TTPickerTableViewController () {
+@interface TTRadioPickerViewController () {
     NSMutableArray *selectedRows_;
     UIBarButtonItem *doneBtn_;
 }
 @end
 
 
-@implementation TTPickerTableViewController
+@implementation TTRadioPickerViewController
 
 @synthesize selectedRows = selectedRows_; // Read only
 
@@ -90,6 +90,7 @@
 }
 
 
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -100,8 +101,8 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if ([self.delegate respondsToSelector:@selector(numberOfRowsInPickerTableViewController:)]) {
-        return [self.delegate numberOfRowsInPickerTableViewController:self];
+    if ([self.delegate respondsToSelector:@selector(numberOfItemsInRadioPickerViewController:)]) {
+        return [self.delegate numberOfItemsInRadioPickerViewController:self];
     }
     return 0;
 }
@@ -110,8 +111,8 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = nil;
-    if ([self.delegate respondsToSelector:@selector(pickerTableViewController:tableView:cellForRowAt:)]) {
-        cell = [self.delegate pickerTableViewController:self
+    if ([self.delegate respondsToSelector:@selector(pickerRadioViewController:tableView:cellForRowAt:)]) {
+        cell = [self.delegate pickerRadioViewController:self
                                               tableView:tableView
                                            cellForRowAt:indexPath.row];
     
@@ -141,8 +142,8 @@
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
         [selectedRows_ addObject:@(indexPath.row)];
     
-        if ([self.delegate respondsToSelector:@selector(pickerTableViewController:didSelectRow:)]) {
-            [self.delegate pickerTableViewController:self didSelectRow:indexPath.row];
+        if ([self.delegate respondsToSelector:@selector(pickerRadioViewController:didSelectIndex:)]) {
+            [self.delegate pickerRadioViewController:self didSelectIndex:indexPath.row];
         }
     }
     [self enableMenuButtonsIfNeeded];
@@ -154,13 +155,13 @@
 
 - (void)cancelAction
 {
-    [self.delegate pickerTableViewControllerDidCancel:self];
+    [self.delegate pickerRadioViewControllerDidCancel:self];
 }
 
 
 - (void)doneAction
 {
-    [self.delegate pickerTableViewController:self didFinishWithSelectedRows:selectedRows_];
+    [self.delegate pickerRadioViewController:self didFinishWithSelectedRows:selectedRows_];
 }
 
 
