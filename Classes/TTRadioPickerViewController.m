@@ -6,37 +6,43 @@
 //
 
 #import "TTRadioPickerViewController.h"
+#import "NSArray+Extras.h"
 
 
 @interface TTRadioPickerViewController () {
-    NSMutableArray *selectedRows_;
-    UIBarButtonItem *doneBtn_;
 }
+@property (nonatomic) UIBarButtonItem *doneBtn;
+@property (nonatomic) UIBarButtonItem *selectAllBtn;
 @end
 
 
 @implementation TTRadioPickerViewController
 
-@synthesize selectedRows = selectedRows_; // Read only
 
-
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (instancetype)initWithID:(NSString *)ID
 {
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        selectedRows_ = [NSMutableArray array];
-        _allowsMultipleSelection = NO;
-        doneBtn_ = nil;
+    if (self = [super init]) {
+        _ID = ID;
     }
     return self;
 }
 
 
-#pragma mark - Setters, getters
+- (instancetype)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+{
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        _allowsMultipleSelection = NO;
+        _allowsEmptySelection = NO;
+        _selectedRows = @[];
+    }
+    return self;
+}
+
 
 - (void)setSelectedRows:(NSArray *)selectedRows
 {
-    selectedRows_ = [selectedRows mutableCopy];
+    _selectedRows = [NSArray arrayWithArray:selectedRows];
 }
 
 
@@ -48,7 +54,7 @@
     [super viewDidLoad];
 
     [self createMenu];
-    [self createView];
+    [self updateMenuButtons];
 }
 
 
@@ -57,36 +63,44 @@
     [super viewWillAppear:animated];
     
     // La condición del assert equivale ¬(selectedRows.count > 1 && !self.allowsMultipleSelection)
-    NSAssert(selectedRows_.count <= 1 || self.allowsMultipleSelection, @"selectedRows.count > 1 con selección simple");
-}
-
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
+    NSAssert(self.selectedRows.count <= 1 || self.allowsMultipleSelection, @"selectedRows.count > 1 con selección simple");
 }
 
 
 - (void)createMenu
 {
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelAction)];
+    if (self.allowsEmptySelection) {
+        self.selectAllBtn = [[UIBarButtonItem alloc] initWithTitle:nil         // Se establece en el método -refreshSelectAllBtn
+                                                      style:UIBarButtonItemStylePlain
+                                                     target:self
+                                                     action:@selector(selectAllOrNoneAction)];
+        self.navigationItem.leftBarButtonItem = self.selectAllBtn;
+        
+    }
+    else {
+        self.navigationItem.leftBarButtonItem  = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
+                                                                                     target:self
+                                                                                     action:@selector(cancelAction)];
+    }
     
-    doneBtn_ = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneAction)];
-    self.navigationItem.rightBarButtonItem = doneBtn_;
-    
-    [self enableMenuButtonsIfNeeded];
+    self.doneBtn = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(doneAction)];
+    self.navigationItem.rightBarButtonItem = self.doneBtn;
 }
 
 
-- (void)createView
+- (void)updateMenuButtons
 {
+    self.doneBtn.enabled = self.allowsEmptySelection || self.selectedRows.count > 0;
     
-}
-
-
-- (void)enableMenuButtonsIfNeeded
-{
-    doneBtn_.enabled = selectedRows_.count > 0;
+    if (self.selectedRows.count == 0) {
+        self.selectAllBtn.title = LS(@"SelectAll");
+    }
+    else if (self.selectedRows.count == [self.dataSource numberOfItemsInRadioPickerViewController:self]) {
+        self.selectAllBtn.title = LS(@"SelectNone");
+    }
+    else {
+        self.selectAllBtn.title = LS(@"SelectAll");
+    }
 }
 
 
@@ -101,24 +115,17 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if ([self.delegate respondsToSelector:@selector(numberOfItemsInRadioPickerViewController:)]) {
-        return [self.delegate numberOfItemsInRadioPickerViewController:self];
-    }
-    return 0;
+    return [self.dataSource numberOfItemsInRadioPickerViewController:self];
 }
 
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = nil;
-    if ([self.delegate respondsToSelector:@selector(pickerRadioViewController:tableView:cellForRowAt:)]) {
-        cell = [self.delegate pickerRadioViewController:self
-                                              tableView:tableView
-                                           cellForRowAt:indexPath.row];
+    UITableViewCell *cell = cell = [self.dataSource pickerRadioViewController:self
+                                                                  tableView:tableView
+                                                               cellForRowAt:indexPath.row];
     
-        cell.accessoryType = [selectedRows_ containsObject:@(indexPath.row)] ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;
-        
-    }
+    cell.accessoryType = [self.selectedRows containsObject:@(indexPath.row)] ? UITableViewCellAccessoryCheckmark : UITableViewCellAccessoryNone;
     return cell;
 }
 
@@ -128,27 +135,29 @@
     UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
     if (cell.accessoryType == UITableViewCellAccessoryCheckmark) {
         cell.accessoryType = UITableViewCellAccessoryNone;
-        [selectedRows_ removeObject:@(indexPath.row)];
+        self.selectedRows = [self.selectedRows arrayByRemovingObject:@(indexPath.row)];
     }
     else {
         if (!self.allowsMultipleSelection) {
-            NSNumber *lastObj = [selectedRows_ lastObject];
+            NSNumber *lastObj = [self.selectedRows lastObject];
             if (lastObj) {
-                [selectedRows_ removeLastObject];
+                self.selectedRows = [self.selectedRows arrayByRemovingObject:lastObj];
                 [self.tableView reloadRowsAtIndexPaths:@[ [NSIndexPath indexPathForRow:[lastObj integerValue] inSection:0]] withRowAnimation:UITableViewRowAnimationNone];
             }
         }
 
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
-        [selectedRows_ addObject:@(indexPath.row)];
+        self.selectedRows = [self.selectedRows arrayByAddingObject:@(indexPath.row)];
     
         if ([self.delegate respondsToSelector:@selector(pickerRadioViewController:didSelectIndex:)]) {
             [self.delegate pickerRadioViewController:self didSelectIndex:indexPath.row];
         }
     }
-    [self enableMenuButtonsIfNeeded];
+    [self updateMenuButtons];
     [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
+
+
 
 
 #pragma mark - Actions
@@ -161,7 +170,26 @@
 
 - (void)doneAction
 {
-    [self.delegate pickerRadioViewController:self didFinishWithSelectedRows:selectedRows_];
+    [self.delegate pickerRadioViewController:self
+                   didFinishWithSelectedRows:self.selectedRows];
+    
+}
+
+
+- (void)selectAllOrNoneAction
+{
+    if ([self.selectAllBtn.title isEqualToString:LS(@"SelectAll")]) {
+        NSMutableArray *allRows = [NSMutableArray array];
+        for (NSUInteger i = 0; i < [self.dataSource numberOfItemsInRadioPickerViewController:self]; i++) {
+            [allRows addObject:@(i)];
+        }
+        self.selectedRows = allRows;
+    }
+    else {
+        self.selectedRows = @[];
+    }
+    [self.tableView reloadData];
+    [self updateMenuButtons];
 }
 
 

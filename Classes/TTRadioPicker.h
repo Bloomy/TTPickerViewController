@@ -17,5 +17,7 @@
 
 @interface TTRadioPicker : UINavigationController
 
-@property (nonatomic, readonly) TTRadioPickerViewController *tableViewController;
+- (instancetype)initWithID:(NSString *)ID;
+
+@property (nonatomic, readonly) TTRadioPickerViewController *radioPickerViewController;
 @end

@@ -8,27 +8,21 @@
 #import "TTRadioPicker.h"
 
 
-@interface TTRadioPicker() {
-}
-
-@end
-
-
 @implementation TTRadioPicker
 
 
-- (id)init
+- (instancetype)initWithID:(NSString *)ID
 {
-    TTRadioPickerViewController *rootVC = [[TTRadioPickerViewController alloc] init];
+    TTRadioPickerViewController *rootVC = [[TTRadioPickerViewController alloc] initWithID:ID];
     if (self = [super initWithRootViewController:rootVC]) {
     }
     return self;
 }
 
 
-- (UITableViewController *)tableViewController
+- (TTRadioPickerViewController *)radioPickerViewController
 {
-    return (UITableViewController *)self.topViewController;
+    return (TTRadioPickerViewController *)self.topViewController;
 }
 
 

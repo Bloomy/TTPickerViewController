@@ -1,0 +1,3 @@
+[submodule "External/TTCategories"]
+	path = External/TTCategories
+	url = https://github.com/orlandoaleman/TTCategories.git
