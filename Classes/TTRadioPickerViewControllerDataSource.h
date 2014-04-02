@@ -14,7 +14,7 @@
 @protocol TTRadioPickerViewControllerDataSource <NSObject>
 
 - (NSInteger)numberOfItemsInRadioPickerViewController:(TTRadioPickerViewController *)controller;
-- (UITableViewCell *)pickerRadioViewController:(TTRadioPickerViewController *)controller
+- (UITableViewCell *)radioPickerViewController:(TTRadioPickerViewController *)controller
                                      tableView:(UITableView *)tableView
                                   cellForRowAt:(NSInteger)row;
 @end

@@ -11,7 +11,7 @@
 
 /**
  * @class TTPickerViewController
- * @brief Ofrece un TTRadiopickerRadioViewController embebido en un navigation 
+ * @brief Ofrece un TTRadioradioPickerViewController embebido en un navigation 
  *        controller, preparado para ser presentado modalmente como picker
  */
 

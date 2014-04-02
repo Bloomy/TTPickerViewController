@@ -13,11 +13,11 @@
 
 @protocol TTRadioPickerViewControllerDelegate <NSObject>
 
-- (void)pickerRadioViewControllerDidCancel:(TTRadioPickerViewController *)controller;
-- (void)pickerRadioViewController:(TTRadioPickerViewController *)controller
+- (void)radioPickerViewControllerDidCancel:(TTRadioPickerViewController *)controller;
+- (void)radioPickerViewController:(TTRadioPickerViewController *)controller
         didFinishWithSelectedRows:(NSArray *)rows;
 
 @optional
-- (void)pickerRadioViewController:(TTRadioPickerViewController *)controller didSelectIndex:(NSInteger)row;
+- (void)radioPickerViewController:(TTRadioPickerViewController *)controller didSelectIndex:(NSInteger)row;
 
 @end

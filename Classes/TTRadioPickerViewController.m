@@ -121,7 +121,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = cell = [self.dataSource pickerRadioViewController:self
+    UITableViewCell *cell = cell = [self.dataSource radioPickerViewController:self
                                                                   tableView:tableView
                                                                cellForRowAt:indexPath.row];
     
@@ -149,8 +149,8 @@
         cell.accessoryType = UITableViewCellAccessoryCheckmark;
         self.selectedRows = [self.selectedRows arrayByAddingObject:@(indexPath.row)];
     
-        if ([self.delegate respondsToSelector:@selector(pickerRadioViewController:didSelectIndex:)]) {
-            [self.delegate pickerRadioViewController:self didSelectIndex:indexPath.row];
+        if ([self.delegate respondsToSelector:@selector(radioPickerViewController:didSelectIndex:)]) {
+            [self.delegate radioPickerViewController:self didSelectIndex:indexPath.row];
         }
     }
     [self updateMenuButtons];
@@ -164,13 +164,13 @@
 
 - (void)cancelAction
 {
-    [self.delegate pickerRadioViewControllerDidCancel:self];
+    [self.delegate radioPickerViewControllerDidCancel:self];
 }
 
 
 - (void)doneAction
 {
-    [self.delegate pickerRadioViewController:self
+    [self.delegate radioPickerViewController:self
                    didFinishWithSelectedRows:self.selectedRows];
     
 }

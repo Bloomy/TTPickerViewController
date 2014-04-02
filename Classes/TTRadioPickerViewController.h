@@ -11,7 +11,7 @@
 
 
 /**
- * @class TTRadiopickerRadioViewController
+ * @class TTRadioradioPickerViewController
  * @brief 
  */
 
