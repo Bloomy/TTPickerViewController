@@ -54,7 +54,6 @@
     [super viewDidLoad];
 
     [self createMenu];
-    [self updateMenuButtons];
 }
 
 
@@ -63,7 +62,9 @@
     [super viewWillAppear:animated];
     
     // La condición del assert equivale ¬(selectedRows.count > 1 && !self.allowsMultipleSelection)
-    NSAssert(self.selectedRows.count <= 1 || self.allowsMultipleSelection, @"selectedRows.count > 1 con selección simple");
+    NSAssert(self.selectedRows.count <= 1 || self.allowsMultipleSelection, @"selectedRows.count > 1 with simple selection");
+    
+    [self updateMenuButtons];
 }
 
 
